@@ -5,11 +5,6 @@ pipeline {
         DOCKER_HUB_PASS = credentials('dockerhub-pass')
     }
     stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/moeiz2701/Garbage_Classifier.git'
-            }
-        }
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t $DOCKER_HUB_USER/garbage-classifier:latest .'
