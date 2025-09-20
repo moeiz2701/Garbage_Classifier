@@ -2,10 +2,10 @@
 import time
 import joblib
 import numpy as np
-import matplotlib.pyplot as plt
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 from data_utils import load_data
+
 
 def train_svm(X_train, y_train, X_val, y_val):
     model = SVC(kernel='rbf', C=10, class_weight='balanced')
@@ -18,6 +18,7 @@ def train_svm(X_train, y_train, X_val, y_val):
     print(f"SVM Accuracy: {acc:.2f}% | Training Time: {duration:.2f}s")
     return acc, duration
 
+
 def plot_learning_curve(X, y):
     from sklearn.model_selection import learning_curve
     import matplotlib
@@ -26,7 +27,8 @@ def plot_learning_curve(X, y):
 
     train_sizes, train_scores, val_scores = learning_curve(
         SVC(kernel='rbf', C=10, class_weight='balanced'),
-        X, y, cv=5, train_sizes=np.linspace(0.1, 1.0, 5), scoring='accuracy'
+        X, y, cv=5, train_sizes=np.linspace(0.1, 1.0, 5),
+        scoring='accuracy'
     )
     train_mean = train_scores.mean(axis=1)
     val_mean = val_scores.mean(axis=1)
@@ -41,11 +43,14 @@ def plot_learning_curve(X, y):
     plt.savefig("svm_learning_curve.png")
     plt.close()
 
+
 def main():
     data_dir = "dataset/garbage_classification"
     X_train, y_train, X_val, y_val = load_data(data_dir)
     acc, time_taken = train_svm(X_train, y_train, X_val, y_val)
-    plot_learning_curve(np.concatenate((X_train, X_val)), np.concatenate((y_train, y_val)))
+    plot_learning_curve(np.concatenate((X_train, X_val)),
+                        np.concatenate((y_train, y_val)))
+
 
 if __name__ == "__main__":
     main()
