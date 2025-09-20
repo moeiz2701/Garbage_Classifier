@@ -7,7 +7,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/<your-repo>.git'
+                git branch: 'main', url: 'https://github.com/moeiz2701/Garbage_Classifier.git'
             }
         }
         stage('Build Docker Image') {
