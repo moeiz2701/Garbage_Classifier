@@ -1,0 +1,6 @@
+kaggle
+scikit-learn
+scikit-image
+Pillow
+matplotlib
+pytest
