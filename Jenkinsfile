@@ -10,7 +10,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 deleteDir()
-                git branch: 'master',
+                git branch: 'main',
                     url: 'https://github.com/moeiz2701/Garbage_Classifier.git'
             }
         }
@@ -36,7 +36,7 @@ pipeline {
 
         stage('Notify Admin') {
             steps {
-                mail to: 'admin@example.com',
+                mail to: 'abdulmoizzzzzz10@gmail.com',
                      subject: "Jenkins Job Success - Build #${BUILD_NUMBER}",
                      body: "The Jenkins pipeline completed successfully. Docker image pushed to DockerHub."
             }
