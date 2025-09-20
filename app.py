@@ -67,7 +67,7 @@ model_choice = st.selectbox("Choose a model", [
 
 # Image uploader
 uploaded_file = st.file_uploader("Upload an image",
-                                  type=["jpg", "jpeg", "png"])
+                                 type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file)

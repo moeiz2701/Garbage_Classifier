@@ -64,7 +64,8 @@ def load_and_extract_features(data_dir, subset_ratio=0.8):
             X.append(features)
             y.append(class_idx)
     if not X:
-        raise ValueError("No images loaded. Check dataset directory structure.")
+        raise ValueError("No images loaded. Check dataset directory "
+                        "structure.")
     X, y = np.array(X), np.array(y)
     np.random.seed(42)
     indices = np.random.permutation(len(X))
@@ -108,7 +109,7 @@ def train_and_evaluate_models(X_train, y_train, X_val, y_val):
 def visualize_results(results):
     plt.figure(figsize=(8, 5))
     plt.bar(results['Model'], results['Accuracy (%)'],
-             color=['blue', 'green', 'orange'])
+            color=['blue', 'green', 'orange'])
     plt.title('Model Validation Accuracies')
     plt.ylabel('Accuracy (%)')
     plt.ylim(0, 100)
