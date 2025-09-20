@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Jenkins Job
-        uses: appleboy/jenkins-action@master
+        uses: appleboy/jenkins-action@master 
         with:
           url: ${{ secrets.JENKINS_URL }}
           user: ${{ secrets.JENKINS_USER }}
@@ -19,3 +19,4 @@ jobs:
           parameters: |
             DOCKER_HUB_USER=${{ secrets.DOCKER_HUB_USER }}
             DOCKER_HUB_PASS=${{ secrets.DOCKER_HUB_PASS }}
+            
