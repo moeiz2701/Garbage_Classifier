@@ -3,7 +3,7 @@ name: Trigger Jenkins Job
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   trigger-jenkins:
@@ -15,7 +15,7 @@ jobs:
           url: ${{ secrets.JENKINS_URL }}
           user: ${{ secrets.JENKINS_USER }}
           token: ${{ secrets.JENKINS_API_TOKEN }}
-          job: "build-and-deploy"
+          job: "GarbageClassifierPipeline"
           parameters: |
             DOCKER_HUB_USER=${{ secrets.DOCKER_HUB_USER }}
             DOCKER_HUB_PASS=${{ secrets.DOCKER_HUB_PASS }}
