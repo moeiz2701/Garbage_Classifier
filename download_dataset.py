@@ -3,9 +3,7 @@
 
 import os
 import zipfile
-from glob import glob
-import kaggle
-from kaggle.api.kaggle_api_extended import KaggleApi
+
 
 # Step 1: Install required dependencies
 def install_dependencies():
@@ -15,17 +13,42 @@ def install_dependencies():
 
 # Step 2: Set up Kaggle API authentication
 def setup_kaggle_auth():
+    # Method 1: Try using environment variables
     os.environ['KAGGLE_USERNAME'] = 'moiz2701'
     os.environ['KAGGLE_KEY'] = '0e29c796624f4607337086263f4ad32b'
     
+    # Method 2: Create kaggle.json file if it doesn't exist
+    kaggle_dir = os.path.expanduser("~/.kaggle")
+    kaggle_json_path = os.path.join(kaggle_dir, "kaggle.json")
+    
+    if not os.path.exists(kaggle_json_path):
+        print("Creating kaggle.json file...")
+        os.makedirs(kaggle_dir, exist_ok=True)
+        
+        kaggle_config = {
+            "username": "moiz2701",
+            "key": "0e29c796624f4607337086263f4ad32b"
+        }
+        
+        import json
+        with open(kaggle_json_path, 'w') as f:
+            json.dump(kaggle_config, f)
+        
+        # Set proper permissions (important for security)
+        os.chmod(kaggle_json_path, 0o600)
+        print(f"Created {kaggle_json_path}")
+    
+    # Import and create API instance after setting up credentials
+    from kaggle.api.kaggle_api_extended import KaggleApi
     api = KaggleApi()
+    
     try:
         api.authenticate()
         print("Kaggle API authentication successful")
         return api
     except Exception as e:
         print(f"Kaggle API authentication failed: {e}")
-        print("Ensure the provided username and key are valid.")
+        print("Please check your Kaggle credentials or dataset access permissions")
         raise
 
 # Step 3: Download and extract dataset
