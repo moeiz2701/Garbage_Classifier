@@ -1,26 +1,44 @@
 pipeline {
     agent any
+
     environment {
-        DOCKER_HUB_USER = credentials('dockerhub-user')
-        DOCKER_HUB_PASS = credentials('dockerhub-pass')
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials-id')  // Jenkins credentials ID
+        DOCKER_IMAGE = "moeiz2701/garbage-classifier"
     }
-    stage('Checkout') {
+
+    stages {
+        stage('Checkout') {
             steps {
-                deleteDir()  // clean workspace fully
-                git branch: 'main',
+                deleteDir()
+                git branch: 'master',
                     url: 'https://github.com/moeiz2701/Garbage_Classifier.git'
             }
         }
-    stages {
+
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $DOCKER_HUB_USER/garbage-classifier:latest .'
+                sh 'docker build -t $DOCKER_IMAGE:$BUILD_NUMBER .'
             }
         }
+
         stage('Push to DockerHub') {
             steps {
-                sh 'echo $DOCKER_HUB_PASS | docker login -u $DOCKER_HUB_USER --password-stdin'
-                sh 'docker push $DOCKER_HUB_USER/garbage-classifier:latest'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials-id', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        docker push $DOCKER_IMAGE:$BUILD_NUMBER
+                        docker tag $DOCKER_IMAGE:$BUILD_NUMBER $DOCKER_IMAGE:latest
+                        docker push $DOCKER_IMAGE:latest
+                    '''
+                }
+            }
+        }
+
+        stage('Notify Admin') {
+            steps {
+                mail to: 'admin@example.com',
+                     subject: "Jenkins Job Success - Build #${BUILD_NUMBER}",
+                     body: "The Jenkins pipeline completed successfully. Docker image pushed to DockerHub."
             }
         }
     }
