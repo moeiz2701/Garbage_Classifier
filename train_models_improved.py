@@ -64,7 +64,7 @@ def load_and_extract_features(data_dir, subset_ratio=0.8):
             y.append(class_idx)
     if not X:
         raise ValueError("No images loaded. Check dataset directory "
-                        "structure.")
+                         "structure.")
     X, y = np.array(X), np.array(y)
     np.random.seed(42)
     indices = np.random.permutation(len(X))
