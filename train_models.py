@@ -16,7 +16,9 @@ from sklearn.model_selection import learning_curve
 IMG_SIZE = 128
 NUM_CLASSES = 12
 CLASS_NAMES = ['battery', 'biological', 'brown-glass', 'cardboard', 'clothes',
-               'green-glass', 'metal', 'paper', 'plastic', 'shoes', 'trash', 'white-glass']
+               'green-glass', 'metal', 'paper', 'plastic', 'shoes', 'trash',
+               'white-glass']
+
 
 def check_class_distribution(data_dir, class_names):
     class_counts = {}
@@ -31,6 +33,7 @@ def check_class_distribution(data_dir, class_names):
     print("-" * 40)
     return class_counts
 
+
 def compute_color_histogram(img, bins=32):
     if img.mode != 'RGB':
         img = img.convert('RGB')
@@ -40,6 +43,7 @@ def compute_color_histogram(img, bins=32):
     hist_b = np.histogram(img_array[:, :, 2], bins=bins, range=(0, 256))[0]
     hist = np.concatenate([hist_r, hist_g, hist_b])
     return hist / (hist.sum() + 1e-6)
+
 
 def load_and_extract_features(data_dir, subset_ratio=0.8):
     X, y = [], []
@@ -52,8 +56,9 @@ def load_and_extract_features(data_dir, subset_ratio=0.8):
             img_rgb = Image.open(img_path).resize((IMG_SIZE, IMG_SIZE))
             img_gray = img_rgb.convert('L')
             img_array = np.array(img_gray) / 255.0
-            hog_features = hog(img_array, pixels_per_cell=(16, 16), cells_per_block=(2, 2),
-                               orientations=9, feature_vector=True)
+            hog_features = hog(img_array, pixels_per_cell=(16, 16),
+                               cells_per_block=(2, 2), orientations=9,
+                               feature_vector=True)
             color_features = compute_color_histogram(img_rgb)
             features = np.concatenate([hog_features, color_features])
             X.append(features)
@@ -67,10 +72,15 @@ def load_and_extract_features(data_dir, subset_ratio=0.8):
     train_idx, val_idx = indices[:train_size], indices[train_size:]
     return X[train_idx], y[train_idx], X[val_idx], y[val_idx]
 
+
 def train_and_evaluate_models(X_train, y_train, X_val, y_val):
     models = {
-        'SVM': SVC(kernel='rbf', C=10, class_weight='balanced', random_state=42),
-        'Random Forest': RandomForestClassifier(n_estimators=200, max_depth=None, class_weight='balanced', random_state=42),
+        'SVM': SVC(kernel='rbf', C=10, class_weight='balanced',
+                   random_state=42),
+        'Random Forest': RandomForestClassifier(n_estimators=200,
+                                                max_depth=None,
+                                                class_weight='balanced',
+                                                random_state=42),
         'k-NN': KNeighborsClassifier(n_neighbors=3)
     }
 
@@ -90,12 +100,15 @@ def train_and_evaluate_models(X_train, y_train, X_val, y_val):
         results['Model'].append(name)
         results['Accuracy (%)'].append(accuracy)
         results['Training Time (s)'].append(training_time)
-        print(f"{name} - Validation Accuracy: {accuracy:.2f}%, Training Time: {training_time:.2f}s")
+        print(f"{name} - Validation Accuracy: {accuracy:.2f}%, "
+              f"Training Time: {training_time:.2f}s")
     return results
+
 
 def visualize_results(results):
     plt.figure(figsize=(8, 5))
-    plt.bar(results['Model'], results['Accuracy (%)'], color=['blue', 'green', 'orange'])
+    plt.bar(results['Model'], results['Accuracy (%)'],
+             color=['blue', 'green', 'orange'])
     plt.title('Model Validation Accuracies')
     plt.ylabel('Accuracy (%)')
     plt.ylim(0, 100)
@@ -106,13 +119,14 @@ def visualize_results(results):
 
     print("\nModel Comparison Table:")
     print("-" * 40)
-    print(f"{'Model':<15} {'Accuracy (%)':<15} {'Training Time (s)':<15}")
+    print(f"{'Model':<15} {'Accuracy (%)':<15} "
+          f"{'Training Time (s)':<15}")
     print("-" * 40)
     for i in range(len(results['Model'])):
-        print(f"{results['Model'][i]:<15} {results['Accuracy (%)'][i]:<15.2f} {results['Training Time (s)'][i]:<15.2f}")
+        print(f"{results['Model'][i]:<15} "
+              f"{results['Accuracy (%)'][i]:<15.2f} "
+              f"{results['Training Time (s)'][i]:<15.2f}")
     print("-" * 40)
-
-
 
 
 def plot_learning_curve(model, X, y, model_name):
@@ -125,8 +139,10 @@ def plot_learning_curve(model, X, y, model_name):
     val_mean = np.mean(val_scores, axis=1)
 
     plt.figure()
-    plt.plot(train_sizes, train_mean, label='Training Accuracy', marker='o')
-    plt.plot(train_sizes, val_mean, label='Validation Accuracy', marker='o')
+    plt.plot(train_sizes, train_mean, label='Training Accuracy',
+             marker='o')
+    plt.plot(train_sizes, val_mean, label='Validation Accuracy',
+             marker='o')
     plt.title(f'Learning Curve - {model_name}')
     plt.xlabel('Training Set Size')
     plt.ylabel('Accuracy')
@@ -141,7 +157,8 @@ def main():
     try:
         check_class_distribution(data_dir, CLASS_NAMES)
         X_train, y_train, X_val, y_val = load_and_extract_features(data_dir)
-        print(f"\nLoaded {len(X_train)} training samples and {len(X_val)} validation samples.")
+        print(f"\nLoaded {len(X_train)} training samples and "
+              f"{len(X_val)} validation samples.")
     except Exception as e:
         print(f"Error loading data: {e}")
         raise
@@ -149,18 +166,20 @@ def main():
     results = train_and_evaluate_models(X_train, y_train, X_val, y_val)
     visualize_results(results)
 
-# Combine data for learning curves
+    # Combine data for learning curves
     X_all = np.concatenate([X_train, X_val])
     y_all = np.concatenate([y_train, y_val])
 
     # Plot learning curves for each model
     models = {
         'SVM': SVC(kernel='rbf', C=10, class_weight='balanced'),
-        'Random Forest': RandomForestClassifier(n_estimators=200, class_weight='balanced'),
+        'Random Forest': RandomForestClassifier(n_estimators=200,
+                                                class_weight='balanced'),
         'k-NN': KNeighborsClassifier(n_neighbors=3)
     }
     for name, model in models.items():
         plot_learning_curve(model, X_all, y_all, name)
+
 
 if __name__ == "__main__":
     main()
