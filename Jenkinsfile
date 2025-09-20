@@ -4,6 +4,13 @@ pipeline {
         DOCKER_HUB_USER = credentials('dockerhub-user')
         DOCKER_HUB_PASS = credentials('dockerhub-pass')
     }
+    stage('Checkout') {
+            steps {
+                deleteDir()  // clean workspace fully
+                git branch: 'main',
+                    url: 'https://github.com/moeiz2701/Garbage_Classifier.git'
+            }
+        }
     stages {
         stage('Build Docker Image') {
             steps {
